@@ -2,7 +2,7 @@ package ;
 
 class Queen extends Chessman {
 	public function new(aPosition : Position, aColor : Color, aChessboard : Chessboard) {
-		super(aPosition, aColor, aChessboard);
+		super("Q", aPosition, aColor, aChessboard);
 	}
 
 	override public function getChar() : String {

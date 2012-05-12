@@ -1,12 +1,18 @@
 package ;
 
-class Chessboard {
-	static var theDepth : Int = 4;
+import kha.Game;
+import kha.Painter;
+import kha.Scene;
+
+class Chessboard extends Game {
+	static var theDepth : Int = 2;
 	var board : Array<Array<Chessman>>;
 	var whiteplayer : Chessplayer;
 	var blackplayer : Chessplayer;
+	var currentplayer : Chessplayer;
 	var white : Array<Chessman>;
 	var black : Array<Chessman>;
+	var winner : Chessplayer;
 
 	public function at(aPosition : Position) : Chessman {
 		return board[aPosition.getX()][aPosition.getY()];
@@ -38,24 +44,30 @@ class Chessboard {
 		board[x][y] = chessman;
 		if (color.isWhite()) white.push(chessman);
 		else black.push(chessman);
+		
+		chessman.x = x * 48;
+		chessman.y = y * 48;
+		Scene.getInstance().addEnemy(chessman);
 	}
 	
-	public function draw() : Void {
-		/*std::cout << "\n  abcdefgh\n";
-		for (int y = 1; y <= 8; ++y) {
-			std::cout << std::endl << (9 - y) << ' ';
-			for (int x = 1; x <= 8; ++x) {
-				if (board[x - 1][y - 1] == NULL) {
-					std::cout << ' ';
-				}
-				else {
-					std::cout << board[x - 1][y - 1]->getChar();
-				}
-			}
-			std::cout << ' ' << (9 - y);
+	function updateChessmanPosition(chessman : Chessman) {
+		if (chessman.isAlive()) {
+			chessman.x = chessman.getPosition().getX() * 48;
+			chessman.y = chessman.getPosition().getY() * 48;
 		}
-		std::cout << "\n\n  abcdefgh\n";
-		std::cout << std::endl;*/
+		else {
+			chessman.x = -100;
+			chessman.y = -100;
+		}
+	}
+	
+	function updateChessmenPositions() {
+		for (chessman in white) {
+			updateChessmanPosition(chessman);
+		}
+		for (chessman in black) {
+			updateChessmanPosition(chessman);
+		}
 	}
 	
 	public function getChessmen(aColor : Color) : Array<Chessman> {
@@ -89,9 +101,23 @@ class Chessboard {
 	
 	//	"Initialisiert das Schachbrett und stellt insbesondere die Figuren auf das Brett"
 	public function new() {
-		for (x in 0...8) for (y in 0...8) board[x][y] = null;
+		super("Chess", 8 * 48, 8 * 48, false);
+		white = new Array<Chessman>();
+		black = new Array<Chessman>();
+		winner = null;
+	}
+	
+	override public function init() : Void {
+		board = new Array<Array<Chessman>>();
+		for (x in 0...8) {
+			board.push(new Array<Chessman>());
+			for (y in 0...8) {
+				board[x].push(null);
+			}
+		}
 		whiteplayer = new HumanChessplayer(this, White.getInstance());
 		blackplayer = new ComputerChessplayer(this, Black.getInstance(), theDepth);
+		currentplayer = whiteplayer;
 
 		//whiteplayer = new ComputerChessplayer(this, White::getInstance(), 4);
 		//blackplayer = new ComputerChessplayer(this, Black::getInstance(), 3);
@@ -124,42 +150,35 @@ class Chessboard {
 		return false;
 	}
 	
-	//Spielt Schach bis einer der beiden Könige sich verabschiedet
-	public function play() : Color {
-		draw();
-		while (true) {
-			whiteplayer.move();
-			draw();
+	override public function update() : Void {
+		if (winner != null) return;
+		if (currentplayer.move()) {
 			if (hasWon(White.getInstance())) {
-				/*std::cout << "\n\nWeiss hat gewonnen." << std::endl;
-				std::cout << "Das Losungswort lautet \"";
-				switch (theDepth) {
-				case 1:
-					std::cout << "Regelkenner";
-					break;
-				case 2:
-					std::cout << "Regelanwender";
-					break;
-				case 3:
-					std::cout << "Hobby Schachi";
-					break;
-				case 4:
-					std::cout << "Profi Schachlik";
-					break;
-				default:
-					std::cout << "Geduldige " << theDepth;
-					break;
-				}
-				std::cout << "\"" << std::endl;*/
-				return White.getInstance();
+				winner = whiteplayer;
 			}
-			blackplayer.move();
-			draw();
 			if (hasWon(Black.getInstance())) {
-				//std::cout << "\n\nSchwarz hat gewonnen.";
-				return Black.getInstance();
+				winner = blackplayer;
+			}
+			if (currentplayer == whiteplayer) currentplayer = blackplayer;
+			else currentplayer = whiteplayer;
+			updateChessmenPositions();
+		}
+	}
+	
+	override public function mouseDown(x : Int, y : Int) : Void {
+		currentplayer.mouseDown(x, y);
+	}
+	
+	override public function render(painter : Painter) : Void {
+		for (x in 0...8) {
+			for (y in 0...8) {
+				if (y % 2 == 0 && x % 2 == 0) painter.setColor(255, 255, 255);
+				if (y % 2 == 1 && x % 2 == 0) painter.setColor(0, 0, 0);
+				if (y % 2 == 0 && x % 2 == 1) painter.setColor(0, 0, 0);
+				if (y % 2 == 1 && x % 2 == 1) painter.setColor(255, 255, 255);
+				painter.fillRect(x * 48, y * 48, 48, 48);
 			}
 		}
-		return Black.getInstance();
+		super.render(painter);
 	}
 }

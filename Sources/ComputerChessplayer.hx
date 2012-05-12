@@ -9,7 +9,7 @@ class ComputerChessplayer extends Chessplayer {
 	}
 
 	//Führt eine AlphaBeta Suche durch
-	override public function move() {
+	override public function move() : Bool {
 		var alpha : Int = -10000;
 		var max : Int = -10000;
 		var maxmove : Move = null;
@@ -25,6 +25,7 @@ class ComputerChessplayer extends Chessplayer {
 			if (newmax > alpha) alpha = newmax;
 		}
 		if (maxmove != null) maxmove.execute();
+		return true;
 	}
 	
 	public function alphaBeta(depth : Int, al : Int, beta : Int, aColor : Color) {

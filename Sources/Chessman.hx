@@ -1,6 +1,9 @@
 package ;
 
-class Chessman {
+import kha.Loader;
+import kha.Sprite;
+
+class Chessman extends Sprite {
 	var position : Position;
 	var chessboard : Chessboard;
 	var color : Color;
@@ -15,7 +18,10 @@ class Chessman {
 		return color;
 	}
 	
-	public function new(aPosition : Position, aColor : Color, aChessboard : Chessboard) {
+	public function new(name : String, aPosition : Position, aColor : Color, aChessboard : Chessboard) {
+		super(Loader.getInstance().getImage((aColor.isBlack() ? "Black" : "White") + name + ".png"), 48, 48, 0);
+		collides = false;
+		accy = 0;
 		position = aPosition;
 		color = aColor;
 		chessboard = aChessboard;

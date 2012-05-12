@@ -2,7 +2,7 @@ package ;
 
 class Rook extends Chessman {
 	public function new(aPosition : Position, aColor : Color, aChessboard : Chessboard) {
-		super(aPosition, aColor, aChessboard);
+		super("R", aPosition, aColor, aChessboard);
 	}
 
 	override public function getChar() : String {

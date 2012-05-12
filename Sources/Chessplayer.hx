@@ -8,8 +8,13 @@ class Chessplayer {
 		chessboard = aChessboard;
 		color = aColor;
 	}
+	
 	//fordert den Spieler freundlich dazu auf, gefälligst seinen nächsten Zug auszuführen
-	public function move() : Void {
+	public function move() : Bool {
+		return false;
+	}
+	
+	public function mouseDown(x : Int, y : Int) : Void {
 		
 	}
 }
