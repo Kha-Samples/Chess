@@ -33,6 +33,7 @@ class HumanChessplayer extends Chessplayer {
 					return;
 				}
 			}
+			man = null;
 		}
 	}
 }

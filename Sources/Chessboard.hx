@@ -5,7 +5,7 @@ import kha.Painter;
 import kha.Scene;
 
 class Chessboard extends Game {
-	static var theDepth : Int = 2;
+	static var theDepth : Int = 4;
 	var board : Array<Array<Chessman>>;
 	var whiteplayer : Chessplayer;
 	var blackplayer : Chessplayer;
