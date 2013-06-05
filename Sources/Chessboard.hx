@@ -1,6 +1,7 @@
 package ;
 
 import kha.Game;
+import kha.Loader;
 import kha.Painter;
 import kha.Scene;
 
@@ -9,7 +10,7 @@ class Chessboard extends Game {
 	var board : Array<Array<Chessman>>;
 	var whiteplayer : Chessplayer;
 	var blackplayer : Chessplayer;
-	var currentplayer : Chessplayer;
+	var currentplayer : Chessplayer = null;
 	var white : Array<Chessman>;
 	var black : Array<Chessman>;
 	var winner : Chessplayer;
@@ -47,7 +48,7 @@ class Chessboard extends Game {
 		
 		chessman.x = x * 48;
 		chessman.y = y * 48;
-		Scene.getInstance().addEnemy(chessman);
+		Scene.the.addEnemy(chessman);
 	}
 	
 	function updateChessmanPosition(chessman : Chessman) {
@@ -101,13 +102,17 @@ class Chessboard extends Game {
 	
 	//	"Initialisiert das Schachbrett und stellt insbesondere die Figuren auf das Brett"
 	public function new() {
-		super("Chess", 8 * 48, 8 * 48, false);
+		super("Chess", false);
 		white = new Array<Chessman>();
 		black = new Array<Chessman>();
 		winner = null;
 	}
 	
 	override public function init() : Void {
+		Loader.the.loadRoom("start", init2);
+	}
+	
+	private function init2(): Void {
 		board = new Array<Array<Chessman>>();
 		for (x in 0...8) {
 			board.push(new Array<Chessman>());
@@ -151,6 +156,7 @@ class Chessboard extends Game {
 	}
 	
 	override public function update() : Void {
+		if (currentplayer == null) return;
 		if (winner != null) return;
 		if (currentplayer.move()) {
 			if (hasWon(White.getInstance())) {

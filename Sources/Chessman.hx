@@ -19,7 +19,7 @@ class Chessman extends Sprite {
 	}
 	
 	public function new(name : String, aPosition : Position, aColor : Color, aChessboard : Chessboard) {
-		super(Loader.getInstance().getImage((aColor.isBlack() ? "Black" : "White") + name + ".png"), 48, 48, 0);
+		super(Loader.the.getImage((aColor.isBlack() ? "Black" : "White") + name), 48, 48, 0);
 		collides = false;
 		accy = 0;
 		position = aPosition;
