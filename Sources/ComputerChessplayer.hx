@@ -1,50 +1,55 @@
-package ;
+package;
 
 class ComputerChessplayer extends Chessplayer {
-	var maxdepth : Int;
-	
-	public function new(aChessboard : Chessboard, aColor : Color, maxdepth : Int) {
+	var maxdepth: Int;
+
+	public function new(aChessboard: Chessboard, aColor: Color, maxdepth: Int) {
 		super(aChessboard, aColor);
 		this.maxdepth = maxdepth;
 	}
 
-	//Führt eine AlphaBeta Suche durch
-	override public function move() : Bool {
-		var alpha : Int = -10000;
-		var max : Int = -10000;
-		var maxmove : Move = null;
+	// Führt eine AlphaBeta Suche durch
+	override public function move(): Bool {
+		var alpha: Int = -10000;
+		var max: Int = -10000;
+		var maxmove: Move = null;
 		var moves = collectMoves(color);
 		for (move in moves) {
 			var oldm = move.execute();
-			var newmax : Int = Std.int(Math.max(-alphaBeta(maxdepth, -10000, -alpha, color.other()), max));
+			var newmax: Int = Std.int(Math.max(-alphaBeta(maxdepth, -10000, -alpha, color.other()), max));
 			if (newmax > max) {
 				maxmove = move;
 				max = newmax;
 			}
 			oldm.execute();
-			if (newmax > alpha) alpha = newmax;
+			if (newmax > alpha)
+				alpha = newmax;
 		}
-		if (maxmove != null) maxmove.execute();
+		if (maxmove != null)
+			maxmove.execute();
 		return true;
 	}
-	
-	public function alphaBeta(depth : Int, al : Int, beta : Int, aColor : Color) {
-		if (depth == 0) return heuristic(aColor);
+
+	public function alphaBeta(depth: Int, al: Int, beta: Int, aColor: Color) {
+		if (depth == 0)
+			return heuristic(aColor);
 		var alpha = al;
 		var moves = collectMoves(aColor);
-		//if (moves.size() == 0) return heuristic(aColor);
+		// if (moves.size() == 0) return heuristic(aColor);
 		for (move in moves) {
 			var oldmove = move.execute();
-			var value : Int = -alphaBeta(depth - 1, -beta, -alpha, aColor.other());
+			var value: Int = -alphaBeta(depth - 1, -beta, -alpha, aColor.other());
 			oldmove.execute();
-			if (value >= beta) return beta;
-			if (value > alpha) alpha = value;
+			if (value >= beta)
+				return beta;
+			if (value > alpha)
+				alpha = value;
 		}
 		return alpha;
 	}
-	
-	//erstellt eine OrderedCollection, die alle für den Spieler möglichen Züge enthält
-	public function collectMoves(aColor : Color) : Array<Move> {
+
+	// erstellt eine OrderedCollection, die alle für den Spieler möglichen Züge enthält
+	public function collectMoves(aColor: Color): Array<Move> {
 		var moves = new Array<Move>();
 		var men = chessboard.getChessmen(aColor);
 		for (man in men) {
@@ -56,18 +61,20 @@ class ComputerChessplayer extends Chessplayer {
 		}
 		return moves;
 	}
-	
-	//ala Shannon
-	public function heuristic(aColor : Color) : Int {
-		var value : Int = 0;
+
+	// ala Shannon
+	public function heuristic(aColor: Color): Int {
+		var value: Int = 0;
 		var men = chessboard.getChessmen(aColor);
 		for (man in men)
-			if (man.isAlive()) value += man.value();
+			if (man.isAlive())
+				value += man.value();
 		value += collectMoves(aColor).length;
 
 		men = chessboard.getChessmenNotIn(aColor);
 		for (man in men)
-			if (man.isAlive()) value -= man.value();
+			if (man.isAlive())
+				value -= man.value();
 		value -= collectMoves(aColor.other()).length;
 
 		return value;

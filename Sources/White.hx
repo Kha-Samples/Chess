@@ -1,29 +1,27 @@
-package ;
+package;
 
 class White implements Color {
-	static var instance : White = new White();
-	
-	function new() {
-		
-	}
+	static var instance: White = new White();
 
-	public function isBlack() : Bool {
+	function new() {}
+
+	public function isBlack(): Bool {
 		return false;
 	}
 
-	public function isDifferent(aColor : Color) : Bool {
+	public function isDifferent(aColor: Color): Bool {
 		return aColor.isBlack();
 	}
 
-	public function isWhite() : Bool {
+	public function isWhite(): Bool {
 		return true;
 	}
 
-	public function other() : Color {
+	public function other(): Color {
 		return Black.getInstance();
 	}
 
-	public static function getInstance() : Color {
+	public static function getInstance(): Color {
 		return instance;
 	}
 }

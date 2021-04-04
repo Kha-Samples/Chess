@@ -1,4 +1,4 @@
-package ;
+package;
 
 enum ChessmanType {
 	BISHOP;

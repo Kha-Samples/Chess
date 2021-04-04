@@ -1,23 +1,23 @@
-package ;
+package;
 
 class Position {
-	var x : Int;
-	var y : Int;
+	var x: Int;
+	var y: Int;
 
-	public function new(aX : Int, aY : Int) {
+	public function new(aX: Int, aY: Int) {
 		x = aX;
 		y = aY;
 	}
 
-	public function toString() : String {
+	public function toString(): String {
 		return x + "-" + y;
 	}
 
-	public function getX() : Int {
+	public function getX(): Int {
 		return x;
 	}
 
-	public function getY() : Int {
+	public function getY(): Int {
 		return y;
 	}
 }

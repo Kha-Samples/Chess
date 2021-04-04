@@ -1,20 +1,18 @@
-package ;
+package;
 
 class Chessplayer {
-	var chessboard : Chessboard;
-	var color : Color;
+	var chessboard: Chessboard;
+	var color: Color;
 
-	public function new(aChessboard : Chessboard, aColor : Color) {
+	public function new(aChessboard: Chessboard, aColor: Color) {
 		chessboard = aChessboard;
 		color = aColor;
 	}
-	
-	//fordert den Spieler freundlich dazu auf, gefälligst seinen nächsten Zug auszuführen
-	public function move() : Bool {
+
+	// fordert den Spieler freundlich dazu auf, gefälligst seinen nächsten Zug auszuführen
+	public function move(): Bool {
 		return false;
 	}
-	
-	public function mouseDown(x : Int, y : Int) : Void {
-		
-	}
+
+	public function mouseDown(x: Int, y: Int): Void {}
 }
