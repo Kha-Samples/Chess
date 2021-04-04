@@ -1,5 +1,8 @@
 package;
 
+import kha.Framebuffer;
+import kha.input.Mouse;
+
 class Chessboard {
 	static var theDepth: Int = 4;
 
@@ -143,6 +146,8 @@ class Chessboard {
 		create(ROOK, 7, 0, Black.getInstance());
 		for (i in 0...8)
 			create(PAWN, i, 1, Black.getInstance());
+
+		Mouse.get().notify(mouseDown, null, null, null);
 	}
 
 	// gibt auch false zurück, wenn eine Position außerhalb des Brettes angesprochen wird
@@ -174,11 +179,13 @@ class Chessboard {
 		}
 	}
 
-	public function mouseDown(x: Int, y: Int): Void {
+	function mouseDown(button: Int, x: Int, y: Int): Void {
 		currentplayer.mouseDown(x, y);
 	}
 
-	public function render(g: kha.graphics2.Graphics): Void {
+	public function render(frames: Array<Framebuffer>): Void {
+		var g = frames[0].g2;
+		g.begin();
 		for (x in 0...8) {
 			for (y in 0...8) {
 				if (y % 2 == 0 && x % 2 == 0)
@@ -192,6 +199,12 @@ class Chessboard {
 				g.fillRect(x * 48, y * 48, 48, 48);
 			}
 		}
-		// super.render(painter);
+		for (piece in white) {
+			g.drawImage(piece.image, piece.x, piece.y);
+		}
+		for (piece in black) {
+			g.drawImage(piece.image, piece.x, piece.y);
+		}
+		g.end();
 	}
 }

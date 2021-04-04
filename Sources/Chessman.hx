@@ -1,13 +1,14 @@
 package;
 
+import js.lib.Reflect;
 import kha.Assets;
 import kha.Image;
 
 class Chessman {
 	public var x: Float;
 	public var y: Float;
+	public var image: Image;
 
-	var image: Image;
 	var position: Position;
 	var chessboard: Chessboard;
 	var color: Color;
@@ -23,7 +24,7 @@ class Chessman {
 	}
 
 	public function new(name: String, aPosition: Position, aColor: Color, aChessboard: Chessboard) {
-		image = aColor.isBlack() ? Assets.images.BlackK : Assets.images.WhiteK;
+		image = aColor.isBlack() ? Reflect.field(Assets.images, "Black" + name) : Reflect.field(Assets.images, "White" + name);
 		position = aPosition;
 		color = aColor;
 		chessboard = aChessboard;
