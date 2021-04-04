@@ -23,7 +23,7 @@ class HumanChessplayer extends Chessplayer {
 
 	override public function mouseDown(x: Int, y: Int): Void {
 		if (man == null) {
-			man = chessboard.at(new Position(Std.int(x / 48), Std.int(y / 48)));
+			man = chessboard.at(new ChessPosition(Std.int(x / 48), Std.int(y / 48)));
 			if (man.getColor().isDifferent(color))
 				man = null;
 		}

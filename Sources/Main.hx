@@ -9,9 +9,9 @@ class Main {
 		// "Tiefe (1-9, 4 empfohlen)
 		System.start({title: "Chess", width: 48 * 8, height: 48 * 8}, (window) -> {
 			Assets.loadEverything(() -> {
-				var board = new Chessboard();
-				System.notifyOnFrames(board.render);
-				Scheduler.addTimeTask(board.update, 0, 1 / 60);
+				var game = new Game();
+				System.notifyOnFrames(game.render);
+				Scheduler.addTimeTask(game.update, 0, 1 / 60);
 			});
 		});
 	}

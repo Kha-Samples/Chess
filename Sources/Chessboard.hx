@@ -1,31 +1,37 @@
 package;
 
-import kha.Framebuffer;
-import kha.input.Mouse;
+class PieceConfig {
+	public var type: Int;
+	public var x: Int;
+	public var y: Int;
+	public var white: Bool;
+
+	public function new(type: Int, x: Int, y: Int, white: Bool) {
+		this.type = type;
+		this.x = x;
+		this.y = y;
+		this.white = white;
+	}
+}
 
 class Chessboard {
-	static var theDepth: Int = 4;
-
 	var board: Array<Array<Chessman>>;
-	var whiteplayer: Chessplayer;
-	var blackplayer: Chessplayer;
-	var currentplayer: Chessplayer = null;
-	var white: Array<Chessman>;
-	var black: Array<Chessman>;
-	var winner: Chessplayer;
 
-	public function at(aPosition: Position): Chessman {
+	public var white: Array<Chessman>;
+	public var black: Array<Chessman>;
+
+	public function at(aPosition: ChessPosition): Chessman {
 		return board[aPosition.getX()][aPosition.getY()];
 	}
 
-	public function putat(aPosition: Position, aChessman: Chessman): Chessman {
+	public function putat(aPosition: ChessPosition, aChessman: Chessman): Chessman {
 		var old = at(aPosition);
 		board[aPosition.getX()][aPosition.getY()] = aChessman;
 		return old;
 	}
 
 	public function create(type: ChessmanType, x: Int, y: Int, color: Color): Void {
-		var position = new Position(x, y);
+		var position = new ChessPosition(x, y);
 		var chessman: Chessman = null;
 		switch (type) {
 			case BISHOP:
@@ -62,7 +68,7 @@ class Chessboard {
 		}
 	}
 
-	function updateChessmenPositions() {
+	public function updateChessmenPositions() {
 		for (chessman in white) {
 			updateChessmanPosition(chessman);
 		}
@@ -84,7 +90,7 @@ class Chessboard {
 	}
 
 	// wenn an der Position niemand steht oder die Position außerhalb des Brettes ist, wird auch false zurückgegeben
-	public function hasDifferentColorThan(aColor: Color, aPosition: Position): Bool {
+	public function hasDifferentColorThan(aColor: Color, aPosition: ChessPosition): Bool {
 		if (aPosition.getX() > 7 || aPosition.getX() < 0 || aPosition.getY() > 7 || aPosition.getY() < 0)
 			return false;
 		if (at(aPosition) == null)
@@ -109,7 +115,6 @@ class Chessboard {
 	public function new() {
 		white = new Array<Chessman>();
 		black = new Array<Chessman>();
-		winner = null;
 
 		board = new Array<Array<Chessman>>();
 		for (x in 0...8) {
@@ -118,12 +123,6 @@ class Chessboard {
 				board[x].push(null);
 			}
 		}
-		whiteplayer = new HumanChessplayer(this, White.getInstance());
-		blackplayer = new ComputerChessplayer(this, Black.getInstance(), theDepth);
-		currentplayer = whiteplayer;
-
-		// whiteplayer = new ComputerChessplayer(this, White::getInstance(), 4);
-		// blackplayer = new ComputerChessplayer(this, Black::getInstance(), 3);
 
 		create(ROOK, 0, 7, White.getInstance());
 		create(KNIGHT, 1, 7, White.getInstance());
@@ -146,65 +145,42 @@ class Chessboard {
 		create(ROOK, 7, 0, Black.getInstance());
 		for (i in 0...8)
 			create(PAWN, i, 1, Black.getInstance());
+	}
 
-		Mouse.get().notify(mouseDown, null, null, null);
+	public function newFromData(data: Array<PieceConfig>): Void {
+		white = new Array<Chessman>();
+		black = new Array<Chessman>();
+
+		board = new Array<Array<Chessman>>();
+		for (x in 0...8) {
+			board.push(new Array<Chessman>());
+			for (y in 0...8) {
+				board[x].push(null);
+			}
+		}
+
+		for (config in data) {
+			create(ChessmanType.createByIndex(config.type), config.x, config.y, config.white ? White.getInstance() : Black.getInstance());
+		}
+	}
+
+	public function toData(): Array<PieceConfig> {
+		var array = new Array<PieceConfig>();
+		for (piece in white) {
+			array.push(new PieceConfig(piece.type.getIndex(), piece.getPosition().getX(), piece.getPosition().getY(), piece.color.isWhite()));
+		}
+		for (piece in black) {
+			array.push(new PieceConfig(piece.type.getIndex(), piece.getPosition().getX(), piece.getPosition().getY(), piece.color.isWhite()));
+		}
+		return array;
 	}
 
 	// gibt auch false zurück, wenn eine Position außerhalb des Brettes angesprochen wird
-	public function isFreeAt(aPosition: Position): Bool {
+	public function isFreeAt(aPosition: ChessPosition): Bool {
 		if (aPosition.getX() > 7 || aPosition.getX() < 0 || aPosition.getY() > 7 || aPosition.getY() < 0)
 			return false;
 		if (at(aPosition) == null)
 			return true;
 		return false;
-	}
-
-	public function update(): Void {
-		if (currentplayer == null)
-			return;
-		if (winner != null)
-			return;
-		if (currentplayer.move()) {
-			if (hasWon(White.getInstance())) {
-				winner = whiteplayer;
-			}
-			if (hasWon(Black.getInstance())) {
-				winner = blackplayer;
-			}
-			if (currentplayer == whiteplayer)
-				currentplayer = blackplayer;
-			else
-				currentplayer = whiteplayer;
-			updateChessmenPositions();
-		}
-	}
-
-	function mouseDown(button: Int, x: Int, y: Int): Void {
-		currentplayer.mouseDown(x, y);
-	}
-
-	public function render(frames: Array<Framebuffer>): Void {
-		var g = frames[0].g2;
-		g.begin();
-		for (x in 0...8) {
-			for (y in 0...8) {
-				if (y % 2 == 0 && x % 2 == 0)
-					g.color = kha.Color.White;
-				if (y % 2 == 1 && x % 2 == 0)
-					g.color = kha.Color.Black;
-				if (y % 2 == 0 && x % 2 == 1)
-					g.color = kha.Color.Black;
-				if (y % 2 == 1 && x % 2 == 1)
-					g.color = kha.Color.White;
-				g.fillRect(x * 48, y * 48, 48, 48);
-			}
-		}
-		for (piece in white) {
-			g.drawImage(piece.image, piece.x, piece.y);
-		}
-		for (piece in black) {
-			g.drawImage(piece.image, piece.x, piece.y);
-		}
-		g.end();
 	}
 }

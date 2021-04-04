@@ -1,6 +1,6 @@
 package;
 
-class Position {
+class ChessPosition {
 	var x: Int;
 	var y: Int;
 

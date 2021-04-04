@@ -1,11 +1,13 @@
 package;
 
+import haxe.macro.Expr.Position;
+
 class Move {
 	var chessman: Chessman;
 	var killed: Chessman;
-	var position: Position;
+	var position: ChessPosition;
 
-	public function new(aChessman: Chessman, aPosition: Position, aKilled: Chessman = null) {
+	public function new(aChessman: Chessman, aPosition: ChessPosition, aKilled: Chessman = null) {
 		chessman = aChessman;
 		position = aPosition;
 		killed = aKilled;
@@ -23,7 +25,11 @@ class Move {
 		return chessman.getPosition().toString() + " to " + position.toString();
 	}
 
-	public function getPosition(): Position {
+	public function getOldPosition(): ChessPosition {
+		return chessman.getPosition();
+	}
+
+	public function getPosition(): ChessPosition {
 		return position;
 	}
 }

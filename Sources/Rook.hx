@@ -1,8 +1,8 @@
 package;
 
 class Rook extends Chessman {
-	public function new(aPosition: Position, aColor: Color, aChessboard: Chessboard) {
-		super("R", aPosition, aColor, aChessboard);
+	public function new(aPosition: ChessPosition, aColor: Color, aChessboard: Chessboard) {
+		super(ROOK, aPosition, aColor, aChessboard);
 	}
 
 	override public function getChar(): String {
@@ -14,34 +14,34 @@ class Rook extends Chessman {
 	// Turm
 	override public function moves(): Array<Move> {
 		var moves = new Array<Move>();
-		var newposition = new Position(position.getX() + 1, position.getY());
+		var newposition = new ChessPosition(position.getX() + 1, position.getY());
 		while (chessboard.isFreeAt(newposition)) {
 			moves.push(new Move(this, newposition));
-			newposition = new Position(newposition.getX() + 1, newposition.getY());
+			newposition = new ChessPosition(newposition.getX() + 1, newposition.getY());
 		}
 		if (chessboard.hasDifferentColorThan(color, newposition))
 			moves.push(new Move(this, newposition));
 
-		newposition = new Position(position.getX() - 1, position.getY());
+		newposition = new ChessPosition(position.getX() - 1, position.getY());
 		while (chessboard.isFreeAt(newposition)) {
 			moves.push(new Move(this, newposition));
-			newposition = new Position(newposition.getX() - 1, newposition.getY());
+			newposition = new ChessPosition(newposition.getX() - 1, newposition.getY());
 		}
 		if (chessboard.hasDifferentColorThan(color, newposition))
 			moves.push(new Move(this, newposition));
 
-		newposition = new Position(position.getX(), position.getY() + 1);
+		newposition = new ChessPosition(position.getX(), position.getY() + 1);
 		while (chessboard.isFreeAt(newposition)) {
 			moves.push(new Move(this, newposition));
-			newposition = new Position(newposition.getX(), newposition.getY() + 1);
+			newposition = new ChessPosition(newposition.getX(), newposition.getY() + 1);
 		}
 		if (chessboard.hasDifferentColorThan(color, newposition))
 			moves.push(new Move(this, newposition));
 
-		newposition = new Position(position.getX(), position.getY() - 1);
+		newposition = new ChessPosition(position.getX(), position.getY() - 1);
 		while (chessboard.isFreeAt(newposition)) {
 			moves.push(new Move(this, newposition));
-			newposition = new Position(newposition.getX(), newposition.getY() - 1);
+			newposition = new ChessPosition(newposition.getX(), newposition.getY() - 1);
 		}
 		if (chessboard.hasDifferentColorThan(color, newposition))
 			moves.push(new Move(this, newposition));

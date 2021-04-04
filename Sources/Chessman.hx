@@ -1,17 +1,13 @@
 package;
 
-import js.lib.Reflect;
-import kha.Assets;
-import kha.Image;
-
 class Chessman {
 	public var x: Float;
 	public var y: Float;
-	public var image: Image;
+	public var type: ChessmanType;
+	public var color: Color;
 
-	var position: Position;
+	var position: ChessPosition;
 	var chessboard: Chessboard;
-	var color: Color;
 	var killed: Bool;
 
 	// für die Ausgabe
@@ -23,8 +19,8 @@ class Chessman {
 		return color;
 	}
 
-	public function new(name: String, aPosition: Position, aColor: Color, aChessboard: Chessboard) {
-		image = aColor.isBlack() ? Reflect.field(Assets.images, "Black" + name) : Reflect.field(Assets.images, "White" + name);
+	public function new(chessmanType: ChessmanType, aPosition: ChessPosition, aColor: Color, aChessboard: Chessboard) {
+		type = chessmanType;
 		position = aPosition;
 		color = aColor;
 		chessboard = aChessboard;
@@ -45,7 +41,7 @@ class Chessman {
 
 	// da macht sich die Schachfigur auf zu einer neuen Position und wenn sie die Gelegenheit dazu bekommt,
 	// rämpelt sie dabei gleich noch jemanden um
-	public function move(aPosition: Position): Move {
+	public function move(aPosition: ChessPosition): Move {
 		chessboard.putat(position, null);
 		var oldman = chessboard.putat(aPosition, this);
 		if (oldman != null)
@@ -60,7 +56,7 @@ class Chessman {
 		return [];
 	}
 
-	public function getPosition(): Position {
+	public function getPosition(): ChessPosition {
 		return position;
 	}
 

@@ -1,8 +1,8 @@
 package;
 
 class Pawn extends Chessman {
-	public function new(aPosition: Position, aColor: Color, aChessboard: Chessboard) {
-		super("P", aPosition, aColor, aChessboard);
+	public function new(aPosition: ChessPosition, aColor: Color, aChessboard: Chessboard) {
+		super(PAWN, aPosition, aColor, aChessboard);
 	}
 
 	override public function getChar(): String {
@@ -20,27 +20,27 @@ class Pawn extends Chessman {
 		else
 			newy = position.getY() + 1;
 
-		var newposition = new Position(position.getX(), newy);
+		var newposition = new ChessPosition(position.getX(), newy);
 		if (chessboard.isFreeAt(newposition)) {
 			moves.push(new Move(this, newposition));
 
 			if (color.isWhite() && position.getY() == 6) {
-				newposition = new Position(position.getX(), newy - 1);
+				newposition = new ChessPosition(position.getX(), newy - 1);
 				if (chessboard.isFreeAt(newposition))
 					moves.push(new Move(this, newposition));
 			}
 			else if (color.isBlack() && position.getY() == 1) {
-				newposition = new Position(position.getX(), newy + 1);
+				newposition = new ChessPosition(position.getX(), newy + 1);
 				if (chessboard.isFreeAt(newposition))
 					moves.push(new Move(this, newposition));
 			}
 		}
 
-		newposition = new Position(position.getX() + 1, newy);
+		newposition = new ChessPosition(position.getX() + 1, newy);
 		if (chessboard.hasDifferentColorThan(color, newposition))
 			moves.push(new Move(this, newposition));
 
-		newposition = new Position(position.getX() - 1, newy);
+		newposition = new ChessPosition(position.getX() - 1, newy);
 		if (chessboard.hasDifferentColorThan(color, newposition))
 			moves.push(new Move(this, newposition));
 
